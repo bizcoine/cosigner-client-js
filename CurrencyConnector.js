@@ -161,8 +161,19 @@ exports.MonitorBalance = function(currencyParams, callback) {
 }
 
 // Tests
+// Connector
 //exports.ListCurrencies((response) => {console.log(response);});
 //exports.host='192.168.99.100';
 //exports.CurrencyParameters.currencySymbol = "BTC";
 //exports.CurrencyParameters.account.push("deadbeef");
 //exports.MonitorBalance(exports.CurrencyParameters, (response) => {console.log(response);});
+
+// Offline Wallets
+//var btcWallet = require('./OfflineWallets/BitcoinWallet');
+//console.log(btcWallet.generatePrivateKey());
+//console.log(btcWallet.generatePublicKey(btcWallet.generatePrivateKey()));
+
+//var ethWallet = require('./OfflineWallets/EthereumWallet');
+//console.log(ethWallet.generatePrivateKey());
+//console.log(ethWallet.generatePublicKey(ethWallet.generatePrivateKey()));
+

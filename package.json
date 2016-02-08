@@ -10,5 +10,7 @@
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
+    "bs58check": "^1.0.8",
+    "secp256k1": "^3.0.0"
   }
 }
