@@ -1,0 +1,5 @@
+node_modules/
+ca.pem
+client.pem
+client.key
+*.swp
