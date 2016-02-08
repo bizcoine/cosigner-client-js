@@ -1,7 +1,8 @@
 var fs = require('fs'),
     util = require('util'),
     EventEmitter = require('events').EventEmitter,
-    https = require('https');
+    https = require('https'),
+    ws = require('ws');
 
 exports.host = '127.0.0.1';
 exports.port = 8443;
@@ -57,7 +58,35 @@ var CosignerConnector = function(host, port, path, method, data) {
   })();
 };
 
+var CosignerWebSocketConnector = function(host, port, path, data) {
+var options = {
+    ca: fs.readFileSync('ca.pem').toString(),
+    key: fs.readFileSync('client.key').toString(),
+    cert: fs.readFileSync('client.pem').toString(),
+
+    hostname: host,
+    port: port,
+    path: path,
+  };
+
+  var self = this;
+  EventEmitter.call(this);
+
+  var connect = (function connect() {
+    var s;
+    self.s = new ws('wss://' + host + ':' + port + path, options);
+    self.s.on('open', () => {
+      // Send the payload.
+      self.s.send(data);
+    });
+    self.s.on('message', (data, flags) => {
+      self.emit('response', data);  
+    });
+  })();
+};
+
 util.inherits(CosignerConnector, EventEmitter);
+util.inherits(CosignerWebSocketConnector, EventEmitter);
 
 exports.CosignerConnector = CosignerConnector;
 
@@ -126,6 +155,13 @@ exports.SubmitTransaction = function(currencyParams, callback) {
   connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
+exports.MonitorBalance = function(currencyParams, callback) {
+  var connector = new CosignerWebSocketConnector(exports.host, exports.port, '/ws/MonitorBalance', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
+}
+
 // Tests
 //exports.ListCurrencies((response) => {console.log(response);});
-
+//exports.CurrencyParameters.currencySymbol = "BTC";
+//exports.CurrencyParameters.account.push("deadbeef");
+//exports.MonitorBalance(exports.CurrencyParameters, (response) => {console.log(response);});
