@@ -27,7 +27,7 @@ var CosignerConnector = function(host, port, path, method, data) {
     key: fs.readFileSync('client.key').toString(),
     cert: fs.readFileSync('client.pem').toString(),
     headers: { 'content-type': 'text/plain'},
-
+    rejectUnauthorized: true,
     hostname: host,
     port: port,
     path: path,
@@ -63,7 +63,7 @@ var options = {
     ca: fs.readFileSync('ca.pem').toString(),
     key: fs.readFileSync('client.key').toString(),
     cert: fs.readFileSync('client.pem').toString(),
-
+    rejectUnauthorized: true,
     hostname: host,
     port: port,
     path: path,
@@ -162,6 +162,7 @@ exports.MonitorBalance = function(currencyParams, callback) {
 
 // Tests
 //exports.ListCurrencies((response) => {console.log(response);});
+//exports.host='192.168.99.100';
 //exports.CurrencyParameters.currencySymbol = "BTC";
 //exports.CurrencyParameters.account.push("deadbeef");
 //exports.MonitorBalance(exports.CurrencyParameters, (response) => {console.log(response);});
