@@ -1,5 +1,6 @@
 var fs = require('fs'),
     util = require('util'),
+    EventEmitter = require('events').EventEmitter,
     https = require('https');
 
 exports.host = '127.0.0.1';
@@ -33,6 +34,7 @@ var CosignerConnector = function(host, port, path, method, data) {
   };
 
   var self = this;
+  EventEmitter.call(this);
 
   var connect = (function connect() {
     var s;
@@ -42,7 +44,7 @@ var CosignerConnector = function(host, port, path, method, data) {
     };
     self.s = https.request(options, (res) => {
       res.on('data', (data) => {
-        console.log(data.toString());
+        self.emit('response', data.toString());
       });
     });
     if(data != null) {
@@ -55,67 +57,75 @@ var CosignerConnector = function(host, port, path, method, data) {
   })();
 };
 
+util.inherits(CosignerConnector, EventEmitter);
+
 exports.CosignerConnector = CosignerConnector;
 
-CosignerConnector.prototype.checkState = function() {
-  if(this.s.authorized) {
-    console.log("Authorized");
-  } else {
-    console.log("Unauthorized");
-    console.log(this);
-  };
-};
-
-exports.ListCurrencies = function() {
+exports.ListCurrencies = function(callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/ListCurrencies', 'GET', null); 
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.RegisterAddress = function(currencyParams) {
+exports.RegisterAddress = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/RegiterAddress', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.GetNewAddress = function(currencyParams) {
+exports.GetNewAddress = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/GetNewAddress', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.GenerateAddressFromKey = function(currencyParams) {
+exports.GenerateAddressFromKey = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/GenerateAddressFromKey', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.ListAllAddresses = function(currencyParams) {
+exports.ListAllAddresses = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/ListAllAddresses', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.ListTransactions = function(currencyParams) {
+exports.ListTransactions = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/ListTransactions', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.GetBalance = function(currencyParams) {
+exports.GetBalance = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/GetBalance', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.PrepareTransaction = function(currencyParams) {
+exports.PrepareTransaction = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/PrepareTransaction', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.GetSignersForTransaction = function(currencyParams) {
+exports.GetSignersForTransaction = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/GetSignersForTransaction', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.GetSignatureString = function(currencyParams) {
+exports.GetSignatureString = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/GetSignatureString', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.ApplySignature = function(currencyParams) {
+exports.ApplySignature = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/ApplySignature', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.ApproveTransaction = function(currencyParams) {
+exports.ApproveTransaction = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/ApproveTransaction', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
-exports.SubmitTransaction = function(currencyParams) {
+exports.SubmitTransaction = function(currencyParams, callback) {
   var connector = new CosignerConnector(exports.host, exports.port, '/rs/SubmitTransaction', 'POST', JSON.stringify(currencyParams));
+  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
+// Tests
+//exports.ListCurrencies((response) => {console.log(response);});
 
