@@ -2,7 +2,7 @@
   "name": "cosigner-client-javascript",
   "version": "0.0.1-SNAPSHOT",
   "description": "Client library for Cosigner Server",
-  "main": "index.js",
+  "main": "CurrencyConnector.js",
   "scripts": {
     "test": "node ./CurrencyConnector.js"
   },
