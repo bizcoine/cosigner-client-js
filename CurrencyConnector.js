@@ -41,11 +41,16 @@ var CosignerConnector = function(host, port, path, method, data) {
     var s;
     options.agent = new https.Agent(options);
     if(data != null) {
-      options.headers['content-length'] = data.length; 
+      options.headers['content-length'] = data.length;
     };
     self.s = https.request(options, (res) => {
       res.on('data', (data) => {
-        self.emit('response', data.toString());
+        data = JSON.parse(data);
+        if(data.error) {
+          self.emit('error', data.error.toString());
+        } else {
+          self.emit('response', data.result.toString());
+        }
       });
     });
     if(data != null) {
@@ -80,7 +85,7 @@ var options = {
       self.s.send(data);
     });
     self.s.on('message', (data, flags) => {
-      self.emit('response', data);  
+      self.emit('response', data);
     });
   })();
 };
@@ -91,7 +96,7 @@ util.inherits(CosignerWebSocketConnector, EventEmitter);
 exports.CosignerConnector = CosignerConnector;
 
 exports.ListCurrencies = function(callback) {
-  var connector = new CosignerConnector(exports.host, exports.port, '/rs/ListCurrencies', 'GET', null); 
+  var connector = new CosignerConnector(exports.host, exports.port, '/rs/ListCurrencies', 'GET', null);
   connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
@@ -176,4 +181,3 @@ exports.MonitorBalance = function(currencyParams, callback) {
 //var ethWallet = require('./OfflineWallets/EthereumWallet');
 //console.log(ethWallet.generatePrivateKey());
 //console.log(ethWallet.generatePublicKey(ethWallet.generatePrivateKey()));
-
