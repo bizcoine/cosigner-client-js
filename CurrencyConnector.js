@@ -101,7 +101,7 @@ exports.ListCurrencies = function(callback) {
 };
 
 exports.RegisterAddress = function(currencyParams, callback) {
-  var connector = new CosignerConnector(exports.host, exports.port, '/rs/RegiterAddress', 'POST', JSON.stringify(currencyParams));
+  var connector = new CosignerConnector(exports.host, exports.port, '/rs/RegisterAddress', 'POST', JSON.stringify(currencyParams));
   connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
