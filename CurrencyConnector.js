@@ -1,11 +1,12 @@
-var fs = require('fs'),
-    util = require('util'),
+var util = require('util'),
     EventEmitter = require('events').EventEmitter,
     https = require('https'),
-    ws = require('ws');
+    ws = require('ws'),
+    ca = require('./ca');
 
 exports.host = '127.0.0.1';
 exports.port = 8443;
+exports.ca = ca;
 
 exports.CurrencyParametersRecipient = {
   recipientAddress: "",
@@ -23,9 +24,9 @@ exports.CurrencyParameters = {
 
 var CosignerConnector = function(host, port, path, method, data) {
   var options = {
-    ca: fs.readFileSync('ca.pem').toString(),
-    key: fs.readFileSync('client.key').toString(),
-    cert: fs.readFileSync('client.pem').toString(),
+    ca: ca.ca,
+    key: ca.key,
+    cert: ca.cert,
     headers: { 'content-type': 'text/plain'},
     rejectUnauthorized: true,
     hostname: host,
@@ -65,9 +66,9 @@ var CosignerConnector = function(host, port, path, method, data) {
 
 var CosignerWebSocketConnector = function(host, port, path, data) {
 var options = {
-    ca: fs.readFileSync('ca.pem').toString(),
-    key: fs.readFileSync('client.key').toString(),
-    cert: fs.readFileSync('client.pem').toString(),
+    ca: ca.ca,
+    key: ca.key,
+    cert: ca.cert,
     rejectUnauthorized: true,
     hostname: host,
     port: port,
