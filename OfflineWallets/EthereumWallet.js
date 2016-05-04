@@ -1,19 +1,13 @@
-var crypto = require('crypto'),
-    secp256k1 = require('secp256k1/js');
+var crypto = require('crypto');
+
+    // change secp256k1 to elliptic
 
 exports.generatePrivateKey = function() {
   // Generate secp256k1 key
-  var privKey;
-  do {
-    privKey = crypto.randomBytes(32);
-  } while(!secp256k1.privateKeyVerify(privKey));
-
-  return privKey.toString('hex');
 };
 
 exports.generatePublicKey = function(privateKey) {
- var pubKey = secp256k1.publicKeyCreate(new Buffer(privateKey, 'hex'), false);
- return pubKey.toString('hex');  
+  // Convert private key to public one 
 };
 
 exports.signWithPrivateKey = function(sigData, privateKey) {
