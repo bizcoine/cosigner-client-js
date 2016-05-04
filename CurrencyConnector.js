@@ -1,7 +1,6 @@
 var util = require('util'),
     EventEmitter = require('events').EventEmitter,
     https = require('https'),
-    ws = require('ws'),
     ca = require('./ca');
 
 exports.host = '127.0.0.1';
@@ -64,35 +63,35 @@ var CosignerConnector = function(host, port, path, method, data) {
   })();
 };
 
-var CosignerWebSocketConnector = function(host, port, path, data) {
-var options = {
-    ca: ca.ca,
-    key: ca.key,
-    cert: ca.cert,
-    rejectUnauthorized: true,
-    hostname: host,
-    port: port,
-    path: path,
-  };
-
-  var self = this;
-  EventEmitter.call(this);
-
-  var connect = (function connect() {
-    var s;
-    self.s = new ws('wss://' + host + ':' + port + path, options);
-    self.s.on('open', () => {
-      // Send the payload.
-      self.s.send(data);
-    });
-    self.s.on('message', (data, flags) => {
-      self.emit('response', data);
-    });
-  })();
-};
+// var CosignerWebSocketConnector = function(host, port, path, data) {
+// var options = {
+//     ca: ca.ca,
+//     key: ca.key,
+//     cert: ca.cert,
+//     rejectUnauthorized: true,
+//     hostname: host,
+//     port: port,
+//     path: path,
+//   };
+//
+//   var self = this;
+//   EventEmitter.call(this);
+//
+//   var connect = (function connect() {
+//     var s;
+//     self.s = new ws('wss://' + host + ':' + port + path, options);
+//     self.s.on('open', () => {
+//       // Send the payload.
+//       self.s.send(data);
+//     });
+//     self.s.on('message', (data, flags) => {
+//       self.emit('response', data);
+//     });
+//   })();
+// };
 
 util.inherits(CosignerConnector, EventEmitter);
-util.inherits(CosignerWebSocketConnector, EventEmitter);
+// util.inherits(CosignerWebSocketConnector, EventEmitter);
 
 exports.CosignerConnector = CosignerConnector;
 
@@ -162,8 +161,8 @@ exports.SubmitTransaction = function(currencyParams, callback) {
 };
 
 exports.MonitorBalance = function(currencyParams, callback) {
-  var connector = new CosignerWebSocketConnector(exports.host, exports.port, '/ws/MonitorBalance', JSON.stringify(currencyParams));
-  connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
+  // var connector = new CosignerWebSocketConnector(exports.host, exports.port, '/ws/MonitorBalance', JSON.stringify(currencyParams));
+  // connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 }
 
 // Tests
