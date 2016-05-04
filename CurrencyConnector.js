@@ -1,6 +1,7 @@
 var util = require('util'),
     EventEmitter = require('events').EventEmitter,
     https = require('https'),
+    http = require('http'),
     ca = require('./ca');
 
 exports.host = '127.0.0.1';
@@ -22,28 +23,49 @@ exports.CurrencyParameters = {
 };
 
 var CosignerConnector = function(host, port, path, method, data) {
-  var options = {
-    ca: ca.ca,
-    key: ca.key,
-    cert: ca.cert,
-    headers: { 'content-type': 'text/plain'},
-    rejectUnauthorized: true,
-    hostname: host,
-    port: port,
-    path: path,
-    method: method
-  };
-
   var self = this;
   EventEmitter.call(this);
 
   var connect = (function connect() {
     var s;
-    options.agent = new https.Agent(options);
+    var options = null;
+    if(exports.ca != null) {
+      options = {
+        ca: exports.ca.ca,
+        key: exports.ca.key,
+        cert: exports.ca.cert,
+        headers: { 'content-type': 'text/plain'},
+        rejectUnauthorized: true,
+        hostname: host,
+        port: port,
+        path: path,
+        method: method
+      };
+    } else {
+      options = {
+        headers: { 'content-type': 'text/plain'},
+        hostname: host,
+        port: port,
+        path: path,
+        method: method
+      };
+    }
+
+    var connection = null;
+    if(exports.ca == null) {
+      connection = http;
+      console.log("HTTP CONNECTION");
+    } else {
+      connection = https;
+    }
+
+    options.agent = new connection.Agent(options);
+
     if(data != null) {
       options.headers['content-length'] = data.length;
     };
-    self.s = https.request(options, (res) => {
+
+    self.s = connection.request(options, (res) => {
       res.on('data', (data) => {
         data = JSON.parse(data);
         if(data.error) {
