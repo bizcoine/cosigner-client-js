@@ -178,7 +178,7 @@ exports.ApproveTransaction = function(currencyParams, callback) {
 };
 
 exports.SubmitTransaction = function(currencyParams, callback) {
-  var connector = new CosignerConnector(exports.host, exports.port, '/rs/SubmitTransaction', 'POST', JSON.stringify(currencyParams));
+  var connector = new CosignerConnector(exports.host, exports.port, '/rs/BroadcastTransaction', 'POST', JSON.stringify(currencyParams));
   connector.on('response', (data) => { if(typeof(callback) == "function") {callback(data); };});
 };
 
